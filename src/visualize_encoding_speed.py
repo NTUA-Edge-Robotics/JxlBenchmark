@@ -1,19 +1,19 @@
+import argparse
 import pandas
 from matplotlib import pyplot
 
-frame = pandas.read_csv("2022_06_21.csv")
+from extract_quality import extract_convert_quality
+from color_mapping import effort_color_mapping
 
-color_mapping = {"lightning": "C0", "thunder": "C1", "falcon": "C2", "cheetah": "C3", "hare": "C4", "wombat": "C5", "squirrel": "C6", "kitten": "C7"}
+parser = argparse.ArgumentParser(description="Plots and shows the encoding speed according to quality for each effort.")
+parser.add_argument("results", help="The CSV results to plot. Must be in the benchmark_xl format.")
 
-# Extract quality
-def extract_quality(method:str):
-    mapping = {"0": 100, "1":90, "1.9":80, "2.8":70, "3.7": 60, "4.6":50, "5.5":40}
+args = parser.parse_args()
 
-    distance = method.split(":")[2][1:]
+frame = pandas.read_csv(args.results)
 
-    return mapping[distance]
-
-frame["quality"] = frame["method"].apply(extract_quality)
+# Convert distance to quality
+frame["quality"] = frame["method"].apply(extract_convert_quality)
 
 # Extract effort
 frame["effort"] = frame["method"].apply(lambda m: m.split(":")[1])
@@ -24,12 +24,12 @@ frame = frame.groupby(["effort", "quality"], as_index=False).mean()
 # Plot BPP according to quality for each effort
 pyplot.figure()
 
-for effort in color_mapping.keys():
+for effort in effort_color_mapping.keys():
     series = frame.query("effort == @effort")
     x = series["quality"]
     y = series["enc_speed"]
 
-    pyplot.scatter(x, y, edgecolors=color_mapping[effort], facecolors="none", label=effort)
+    pyplot.scatter(x, y, edgecolors=effort_color_mapping[effort], facecolors="none", label=effort)
 
 pyplot.title("Encoding speed according to quality factor for each effort", wrap = True)
 pyplot.xlabel("Quality factor")
