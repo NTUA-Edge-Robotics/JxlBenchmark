@@ -1,6 +1,7 @@
 import argparse
 import pandas
 
+from effort_sorter import effort_sorter
 from extract_quality import extract_convert_quality
 
 parser = argparse.ArgumentParser(description="Prints the encoding speed according to the quality factor and effort.")
@@ -19,4 +20,6 @@ frame["effort"] = frame["method"].apply(lambda m: m.split(":")[1])
 # Aggregate results by effort and quality
 frame = frame.groupby(["effort", "quality"], as_index=False).mean()
 
-print(frame[["effort", "quality", "enc_speed"]])
+frame = frame.pivot("effort", "quality", "enc_speed")
+
+print(frame.sort_index(key=effort_sorter))
