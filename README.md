@@ -8,7 +8,7 @@ The project aims to visualize the performance of [libjxl](https://github.com/lib
 
 ## Primary Data Generation
 
-Generate the primary data using the `benchmark_xl` tool with the `--print_details_csv` option.
+Generate the primary data using `bash src/generate_primary_data.sh <path the images directory>` or using the `benchmark_xl` tool with the `--print_details_csv` option.
 
 ## Bitrate Visualization
 
