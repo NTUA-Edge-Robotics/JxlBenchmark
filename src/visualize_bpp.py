@@ -20,7 +20,7 @@ frame["quality"] = frame["method"].apply(extract_convert_quality)
 frame["effort"] = frame["method"].apply(lambda m: m.split(":")[1])
 
 # Aggregate results by effort and quality
-frame = frame.groupby(["effort", "quality"], as_index=False).mean()
+frame = frame.groupby(["effort", "quality"], as_index=False).mean(numeric_only=True)
 
 # Plot bpp according to quality for each effort
 pyplot.figure()
